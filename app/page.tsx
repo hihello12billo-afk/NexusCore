@@ -91,7 +91,7 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
     <motion.div 
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] bg-[#020617] w-screen h-screen flex flex-col items-center justify-center font-mono"
+      className="fixed inset-0 z-[200] bg-[#020617] flex flex-col items-center justify-center font-mono"
     >
       <div className="flex flex-col items-center">
         <div className="w-64 mb-4 text-xs text-indigo-400 flex justify-between">
@@ -129,6 +129,7 @@ const TiltCard = ({ children, className }: { children: React.ReactNode, classNam
   );
 };
 
+// --- THEME TOGGLE BUTTON ---
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -146,6 +147,8 @@ const ThemeToggle = () => {
     </button>
   );
 };
+
+// --- MAIN PAGE ---
 
 export default function LandingPage() {
   const [isChecking, setIsChecking] = useState(true);
@@ -196,14 +199,14 @@ export default function LandingPage() {
       <motion.div 
         initial={{ opacity: 0 }} 
         animate={{ opacity: (isChecking || showPreloader) ? 0 : 1 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5 }}
       >
           <Spotlight />
           <ScrollProgress />
           
           <nav className="fixed top-0 w-full z-[90] border-b border-slate-200 dark:border-white/5 backdrop-blur-xl bg-white/70 dark:bg-[#020617]/70 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
-              
+              {/* CLICKABLE LOGO START */}
               <a href="/" className="flex items-center gap-3 group cursor-pointer">
                 <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 relative overflow-hidden">
                   <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
@@ -213,6 +216,7 @@ export default function LandingPage() {
                   Nexus<span className="text-indigo-600 dark:text-indigo-500">Core</span>
                 </span>
               </a>
+              {/* CLICKABLE LOGO END */}
               
               <div className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 <a href="#monitor" className="hover:text-indigo-600 dark:hover:text-white transition-colors">System</a>
@@ -268,8 +272,13 @@ export default function LandingPage() {
             </div>
 
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center relative z-10">
-              {/* SPAWNED ALREADY Logic: Removed triggers */}
-              <div className="opacity-100 transform-none">
+              {/* HERO MOTION SNAPPY UPDATE */}
+              <motion.div 
+                initial={{ opacity: 0, x: -50 }} 
+                whileInView={{ opacity: 1, x: 0 }} 
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.6 }}
+              >
                 <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 text-xs font-bold uppercase tracking-[0.2em] mb-8">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
@@ -295,9 +304,9 @@ export default function LandingPage() {
                     View Demo <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="relative hidden lg:flex justify-center perspective-1000">
+              <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative hidden lg:flex justify-center perspective-1000">
                 <div className="relative w-[600px] h-[600px] transform-style-3d">
                     <motion.div style={{ rotate }} className="absolute inset-0 border border-slate-300 dark:border-white/5 rounded-full border-dashed" />
                     <motion.div animate={{ rotate: -360 }} transition={{ duration: 50, repeat: Infinity, ease: "linear" }} className="absolute inset-12 border border-indigo-500/20 rounded-full border-dotted" />
@@ -318,7 +327,7 @@ export default function LandingPage() {
                         <Brain className="w-16 h-16 text-indigo-600 dark:text-white" />
                     </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </section>
 
@@ -334,9 +343,15 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* MONITOR SECTION: Now Spawned Already */}
+          {/* MONITOR SECTION SNAPPY UPDATE */}
           <section id="monitor" className="py-32 px-6">
-            <div className="max-w-7xl mx-auto">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.5 }}
+              className="max-w-7xl mx-auto"
+            >
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16">
                 <div>
                     <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Live Neural Network</h2>
@@ -394,7 +409,7 @@ export default function LandingPage() {
                     </div>
                 </div>
                 </div>
-            </div>
+            </motion.div>
           </section>
 
           <section id="ecosystem" className="py-20 px-6 bg-slate-100 dark:bg-slate-900/20">
@@ -411,9 +426,15 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* CAPABILITIES SECTION: Now Spawned Already */}
+          {/* CAPABILITIES SECTION SNAPPY UPDATE */}
           <section id="capabilities" className="py-32 px-6">
-            <div className="max-w-7xl mx-auto">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.5 }}
+              className="max-w-7xl mx-auto"
+            >
                 <div className="text-center mb-16">
                 <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-6">Modular Capabilities</h2>
                 <div className="flex flex-wrap justify-center gap-4">
@@ -438,7 +459,7 @@ export default function LandingPage() {
                     {activeTab === 'marketing' && (
                     <motion.div 
                         key="marketing"
-                        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                         className="grid md:grid-cols-2 gap-8"
                     >
                         <div className="p-12 rounded-[40px] bg-white dark:bg-gradient-to-br dark:from-indigo-900/40 dark:to-slate-900 border border-slate-200 dark:border-indigo-500/30 relative overflow-hidden shadow-2xl shadow-indigo-500/10">
@@ -462,7 +483,7 @@ export default function LandingPage() {
                     {activeTab === 'operations' && (
                         <motion.div 
                           key="operations"
-                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                           className="grid md:grid-cols-2 gap-8"
                         >
                           <div className="p-12 rounded-[40px] bg-white dark:bg-gradient-to-br dark:from-purple-900/40 dark:to-slate-900 border border-slate-200 dark:border-purple-500/30 relative overflow-hidden shadow-2xl">
@@ -485,7 +506,7 @@ export default function LandingPage() {
                     {activeTab === 'support' && (
                         <motion.div 
                           key="support"
-                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                           className="grid md:grid-cols-2 gap-8"
                         >
                           <div className="p-12 rounded-[40px] bg-white dark:bg-gradient-to-br dark:from-blue-900/40 dark:to-slate-900 border border-slate-200 dark:border-blue-500/30 relative overflow-hidden shadow-2xl">
@@ -509,7 +530,7 @@ export default function LandingPage() {
                     {activeTab === 'sales' && (
                         <motion.div 
                           key="sales"
-                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                           className="grid md:grid-cols-2 gap-8"
                         >
                           <div className="p-12 rounded-[40px] bg-white dark:bg-gradient-to-br dark:from-green-900/40 dark:to-slate-900 border border-slate-200 dark:border-green-500/30 relative overflow-hidden shadow-2xl">
@@ -533,7 +554,7 @@ export default function LandingPage() {
                     {activeTab === 'engineering' && (
                         <motion.div 
                           key="engineering"
-                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                           className="grid md:grid-cols-2 gap-8"
                         >
                           <div className="p-12 rounded-[40px] bg-white dark:bg-gradient-to-br dark:from-orange-900/40 dark:to-slate-900 border border-slate-200 dark:border-orange-500/30 relative overflow-hidden shadow-2xl">
@@ -555,12 +576,18 @@ export default function LandingPage() {
                     )}
                 </AnimatePresence>
                 </div>
-            </div>
+            </motion.div>
           </section>
 
-          {/* PRICING SECTION: Now Spawned Already */}
+          {/* PRICING SECTION SNAPPY UPDATE */}
           <section id="pricing" className="py-32 px-6">
-            <div className="max-w-7xl mx-auto">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.5 }}
+              className="max-w-7xl mx-auto"
+            >
                 <div className="text-center mb-20">
                 <h2 className="text-4xl font-bold text-slate-900 dark:text-white">Investment Plans</h2>
                 </div>
@@ -600,7 +627,7 @@ export default function LandingPage() {
                     <button className="w-full py-4 rounded-xl border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white font-bold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Contact Us</button>
                 </TiltCard>
                 </div>
-            </div>
+            </motion.div>
           </section>
 
           <section className="py-48 px-6 relative overflow-hidden">
