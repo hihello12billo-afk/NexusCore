@@ -6,10 +6,9 @@ import { motion, AnimatePresence, useScroll, useSpring, useMotionTemplate, useMo
 import { 
   Zap, ArrowRight, CheckCircle2, Rocket, 
   Database, Lock, Code2, Brain, 
-  Activity, Server, Command, 
-  Server as ServerIcon, Sun, Moon, 
-  Menu, X, Globe, Cpu, MessageSquare, 
-  Share2, Terminal, Shield, Smartphone
+  Activity, Server as ServerIcon, Command, 
+  Sun, Moon, Menu, X, Globe, Cpu, MessageSquare, 
+  Share2, Terminal
 } from 'lucide-react';
 import ContactModal from '@/components/ContactModal';
 
@@ -92,6 +91,7 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
     <motion.div 
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      // Z-Index 200 ensures this sits ON TOP of the content, but the content still exists underneath
       className="fixed inset-0 z-[200] bg-[#020617] flex flex-col items-center justify-center font-mono"
     >
       <div className="w-64 mb-4 text-xs text-indigo-400 flex justify-between">
@@ -167,12 +167,19 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-200 selection:bg-indigo-500 font-sans overflow-x-hidden transition-colors duration-300">
+      
+      {/* 1. Preloader - Sits on TOP of content (z-index 200) */}
       <AnimatePresence>
         {loading && <Preloader onComplete={() => setLoading(false)} />}
       </AnimatePresence>
 
-      {!loading && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      {/* 2. Main Content - ALWAYS RENDERED (No conditional check here!) */}
+      {/* Opacity is 0 while loading so user doesn't see it, but Google can read the DOM */}
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+      >
           <Spotlight />
           <ScrollProgress />
           
@@ -628,8 +635,7 @@ export default function LandingPage() {
 
           {/* CONTACT MODAL (Now triggered by buttons) */}
           <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        </motion.div>
-      )}
+      </motion.div>
     </div>
   );
 }
