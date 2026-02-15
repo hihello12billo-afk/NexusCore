@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
-import "./globals.css"; 
+import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Script from "next/script"; // <--- 1. IMPORT SCRIPT COMPONENT
 
 const spaceGrotesk = Space_Grotesk({ 
   subsets: ["latin"], 
@@ -14,13 +15,12 @@ const inter = Inter({
   variable: "--font-inter" 
 });
 
-// --- UPDATED METADATA SECTION ---
 export const metadata: Metadata = {
   title: "NexusCore | AI Automation Agency & Custom Chatbots",
   description: "NexusCore replaces manual chaos with intelligent AI agents. We build custom AI chatbots, workflow automations, and Python solutions.",
   keywords: ["AI Automation Agency", "Custom Chatbots", "Business Automation", "Zapier Experts", "Python Development"],
   
-  // THIS IS THE MISSING PIECE FOR GOOGLE VERIFICATION:
+  // Google Ownership Verification
   verification: {
     google: "cuIH3LRbdaun2QY38zGHLG1qbbgQ9NEqQG8FBO3TG5Q",
   },
@@ -43,6 +43,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-200 transition-colors duration-300`}>
+        
+        {/* 2. GOOGLE ANALYTICS SCRIPTS */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-SL32YS0WEN"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-SL32YS0WEN');
+          `}
+        </Script>
+
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
