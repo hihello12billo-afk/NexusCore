@@ -91,7 +91,6 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
     <motion.div 
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      // Z-Index 200 ensures this sits ON TOP of the content, but the content still exists underneath
       className="fixed inset-0 z-[200] bg-[#020617] flex flex-col items-center justify-center font-mono"
     >
       <div className="w-64 mb-4 text-xs text-indigo-400 flex justify-between">
@@ -150,13 +149,43 @@ const ThemeToggle = () => {
 // --- MAIN PAGE ---
 
 export default function LandingPage() {
-  const [loading, setLoading] = useState(true);
+  // We separate "isChecking" (database look up) from "showPreloader" (animation)
+  const [isChecking, setIsChecking] = useState(true);
+  const [showPreloader, setShowPreloader] = useState(false);
+  
   const [activeTab, setActiveTab] = useState("marketing");
   const { scrollYProgress } = useScroll();
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const [randomData, setRandomData] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // --- SMART CHECK: SAME DAY LOGIC ---
+  useEffect(() => {
+    // 1. Get today's date (e.g., "Mon Feb 16 2026")
+    const today = new Date().toDateString();
+    
+    // 2. Check what date we saved last time
+    const lastVisitDate = localStorage.getItem("nexus_last_visit");
+
+    if (lastVisitDate === today) {
+      // VISITED TODAY: Don't show animation
+      setShowPreloader(false);
+    } else {
+      // NEW VISIT OR DIFFERENT DAY: Show animation
+      setShowPreloader(true);
+    }
+
+    // 3. Stop checking so we can render
+    setIsChecking(false);
+  }, []);
+
+  // --- SAVE THE DATE WHEN ANIMATION ENDS ---
+  const handleLoaderComplete = () => {
+    setShowPreloader(false);
+    // Save "Today" as the last visited date
+    localStorage.setItem("nexus_last_visit", new Date().toDateString());
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -168,16 +197,23 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-200 selection:bg-indigo-500 font-sans overflow-x-hidden transition-colors duration-300">
       
-      {/* 1. Preloader - Sits on TOP of content (z-index 200) */}
+      {/* 1. BLACK OVERLAY (Flash Prevention) */}
+      {/* This sits on top of everything for the 0.05s it takes to check the date */}
+      {isChecking && (
+        <div className="fixed inset-0 z-[300] bg-[#020617]" />
+      )}
+
+      {/* 2. Preloader Animation (Only shows if isChecking is done AND showPreloader is true) */}
       <AnimatePresence>
-        {loading && <Preloader onComplete={() => setLoading(false)} />}
+        {!isChecking && showPreloader && <Preloader onComplete={handleLoaderComplete} />}
       </AnimatePresence>
 
-      {/* 2. Main Content - ALWAYS RENDERED (No conditional check here!) */}
-      {/* Opacity is 0 while loading so user doesn't see it, but Google can read the DOM */}
+      {/* 3. Main Content - Always Rendered (SEO Friendly) */}
       <motion.div 
         initial={{ opacity: 0 }} 
-        animate={{ opacity: loading ? 0 : 1 }}
+        // Logic: If checking OR showing preloader -> Hide content visually (opacity 0)
+        // Once both are done -> Show content (opacity 1)
+        animate={{ opacity: (isChecking || showPreloader) ? 0 : 1 }}
         transition={{ duration: 0.5 }}
       >
           <Spotlight />
